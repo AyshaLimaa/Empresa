@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarefas Listadas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #8B0000;
+        }
+
+        .task-list {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .task-list p {
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-left: 4px solid #8B0000;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .task-list p span {
+            font-weight: bold;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #A52A2A;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Tarefas Cadastradas</h2>
+
+        <!-- Lista de tarefas adicionadas -->
+        <div class="task-list" id="taskList">
+            <!-- As tarefas serão listadas aqui -->
+        </div>
+
+        <button id="goBackBtn">Voltar para Tela de Cadastro de Tarefas</button>
+    </div>
+
+    <script>
+        // Carrega as tarefas do localStorage
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+        // Função para renderizar as tarefas
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = ''; // Limpa a lista de tarefas
+
+            if (tasks.length === 0) {
+                taskList.innerHTML = '<p>Nenhuma tarefa cadastrada.</p>';
+            } else {
+                tasks.forEach(task => {
+                    const taskItem = document.createElement('p');
+                    taskItem.innerHTML = `<span>Tarefa:</span> ${task.name} <br> <span>Responsável:</span> ${task.responsible}`;
+                    taskList.appendChild(taskItem);
+                });
+            }
+        }
+
+        // Função para voltar à tela de cadastro de tarefas
+        document.getElementById('goBackBtn').addEventListener('click', function() {
+            window.location.href = 'cadastrar_tarefa.html'; // Redireciona para a tela de cadastro de tarefas
+        });
+
+        // Renderiza as tarefas ao carregar a página
+        document.addEventListener('DOMContentLoaded', renderTasks);
+    </script>
+</body>
+</html>

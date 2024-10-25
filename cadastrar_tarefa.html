@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Tarefa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #8B0000;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background-color: #A52A2A;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Cadastrar Nova Tarefa</h2>
+
+        <div class="input-group">
+            <label for="taskName">Nome da Tarefa:</label>
+            <input type="text" id="taskName" placeholder="Digite o nome da tarefa">
+        </div>
+
+        <div class="input-group">
+            <label for="personResponsible">Pessoa Responsável:</label>
+            <input type="text" id="personResponsible" placeholder="Digite o nome do responsável">
+        </div>
+
+        <button id="saveTaskBtn">Salvar Tarefa</button>
+        <button id="goToMainScreenBtn">Voltar para a Tela Principal</button>
+        <button id="goToTaskListBtn">Ver Tarefas Listadas</button>
+    </div>
+
+    <script>
+        // Inicializa uma lista de tarefas vazia
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+        // Função para salvar uma nova tarefa
+        function saveTask() {
+            const taskName = document.getElementById('taskName').value;
+            const personResponsible = document.getElementById('personResponsible').value;
+
+            if (taskName.trim() && personResponsible.trim()) {
+                const newTask = {
+                    id: tasks.length + 1,
+                    name: taskName,
+                    responsible: personResponsible
+                };
+
+                // Adiciona a tarefa à lista de tarefas e salva no localStorage
+                tasks.push(newTask);
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                clearFields(); // Limpa os campos de entrada
+                alert('Tarefa salva com sucesso!'); // Alerta que a tarefa foi salva
+            } else {
+                alert('Por favor, preencha todos os campos.');
+            }
+        }
+
+        // Função para limpar os campos de entrada
+        function clearFields() {
+            document.getElementById('taskName').value = '';
+            document.getElementById('personResponsible').value = '';
+        }
+
+        // Adiciona o evento de clique ao botão de salvar tarefa
+        document.getElementById('saveTaskBtn').addEventListener('click', saveTask);
+
+        // Função para voltar à tela principal
+        document.getElementById('goToMainScreenBtn').addEventListener('click', function() {
+            window.location.href = 'tela_principal.html'; // Redireciona para a tela principal
+        });
+
+        // Função para ir para a tela de tarefas listadas
+        document.getElementById('goToTaskListBtn').addEventListener('click', function() {
+            window.location.href = 'tela_tarefas_listadas.html'; // Redireciona para a tela de tarefas listadas
+        });
+    </script>
+</body>
+</html>
