@@ -81,7 +81,12 @@
             margin-bottom: 10px;
         }
 
-        .task-list p {
+        .task-list ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .task-list ul li {
             margin-left: 20px;
         }
 
@@ -98,6 +103,16 @@
             background-color: #8B0000;
         }
 
+        .task-form {
+            margin-top: 15px;
+        }
+
+        .task-form input {
+            padding: 5px;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+
     </style>
 </head>
 <body>
@@ -108,7 +123,6 @@
 
         <div class="actions">
             <button id="addProjectBtn">Cadastrar Projeto</button>
-            <button id="addTaskBtn">Cadastrar Tarefa</button>
             <button id="logoutBtn">Logout</button>
         </div>
 
@@ -134,14 +148,40 @@
                 projectTitle.textContent = `${project.name} (Equipe: ${project.team})`;
                 projectCard.appendChild(projectTitle);
 
+                const projectDates = document.createElement('p');
+                projectDates.textContent = `Início: ${project.startDate} - Fim: ${project.endDate}`;
+                projectCard.appendChild(projectDates);
+
                 const taskList = document.createElement('div');
                 taskList.classList.add('task-list');
-                project.tasks.forEach(task => {
-                    const taskItem = document.createElement('p');
-                    taskItem.textContent = task;
-                    taskList.appendChild(taskItem);
-                });
+
+                // Verifica se o projeto possui tarefas
+                if (project.tasks.length > 0) {
+                    const taskUl = document.createElement('ul');
+                    project.tasks.forEach(task => {
+                        const taskItem = document.createElement('li');
+                        taskItem.textContent = `Tarefa: ${task.name} - Responsável: ${task.responsible} - Início: ${task.startDate} - Fim: ${task.endDate}`;
+                        taskUl.appendChild(taskItem);
+                    });
+                    taskList.appendChild(taskUl);
+                } else {
+                    const noTaskMsg = document.createElement('p');
+                    noTaskMsg.textContent = 'Nenhuma tarefa cadastrada.';
+                    taskList.appendChild(noTaskMsg);
+                }
                 projectCard.appendChild(taskList);
+
+                // Formulário para adicionar nova tarefa
+                const taskForm = document.createElement('div');
+                taskForm.classList.add('task-form');
+                taskForm.innerHTML = `
+                    <input type="text" placeholder="Nome da Tarefa" id="taskName_${project.id}">
+                    <input type="text" placeholder="Responsável" id="taskResponsible_${project.id}">
+                    <input type="date" placeholder="Data Início" id="taskStartDate_${project.id}">
+                    <input type="date" placeholder="Data Fim" id="taskEndDate_${project.id}">
+                    <button onclick="addTask(${project.id})">Adicionar Tarefa</button>
+                `;
+                projectCard.appendChild(taskForm);
 
                 const deleteBtn = document.createElement('button');
                 deleteBtn.classList.add('delete-btn');
@@ -153,6 +193,34 @@
             });
         }
 
+        // Função para adicionar uma nova tarefa ao projeto
+        function addTask(projectId) {
+            const taskNameInput = document.getElementById(`taskName_${projectId}`);
+            const taskResponsibleInput = document.getElementById(`taskResponsible_${projectId}`);
+            const taskStartDateInput = document.getElementById(`taskStartDate_${projectId}`);
+            const taskEndDateInput = document.getElementById(`taskEndDate_${projectId}`);
+
+            const taskName = taskNameInput.value;
+            const taskResponsible = taskResponsibleInput.value;
+            const taskStartDate = taskStartDateInput.value;
+            const taskEndDate = taskEndDateInput.value;
+
+            if (taskName && taskResponsible && taskStartDate && taskEndDate) {
+                const project = projects.find(p => p.id === projectId);
+                project.tasks.push({
+                    name: taskName,
+                    responsible: taskResponsible,
+                    startDate: taskStartDate,
+                    endDate: taskEndDate
+                });
+
+                localStorage.setItem('projects', JSON.stringify(projects)); // Atualiza o localStorage
+                renderProjects(); // Re-renderiza os projetos
+            } else {
+                alert('Por favor, preencha todos os campos da tarefa.');
+            }
+        }
+
         // Função para excluir um projeto
         function deleteProject(projectId) {
             projects = projects.filter(project => project.id !== projectId);
@@ -162,17 +230,12 @@
 
         // Função de logout
         document.getElementById('logoutBtn').addEventListener('click', function() {
-            window.location.href = 'login.html'; // Redireciona para a tela de login
+            window.location.href = 'Login.html'; // Redireciona para a tela de login
         });
 
         // Redireciona para a tela de cadastro de projeto
         document.getElementById('addProjectBtn').addEventListener('click', function() {
             window.location.href = 'cadastrar_projeto.html'; // Redireciona para a tela de cadastro de projeto
-        });
-
-        // Redireciona para a tela de cadastro de tarefa
-        document.getElementById('addTaskBtn').addEventListener('click', function() {
-            window.location.href = 'cadastrar_tarefa.html'; // Redireciona para a tela de cadastro de tarefa
         });
 
         // Renderiza os projetos ao carregar a página

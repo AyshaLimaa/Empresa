@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projetos do Gerente</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #8B0000;
+        }
+
+        .project {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+
+        .project h3 {
+            margin-bottom: 5px;
+            color: #8B0000;
+        }
+
+        .project p {
+            margin-bottom: 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background-color: #A52A2A;
+        }
+
+        .actions {
+            margin-top: 10px;
+        }
+
+        .no-projects {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #A52A2A;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Projetos do Gerente</h2>
+        <div id="projectList">
+            <!-- Projetos do gerente autenticado serão exibidos aqui -->
+        </div>
+        <div class="actions">
+            <button id="backToMainBtn">Voltar para a Tela Principal</button>
+        </div>
+    </div>
+
+    <script>
+        // Função para listar os projetos do gerente autenticado
+        function listManagerProjects() {
+            // Simula um gerente autenticado
+            const authenticatedEmail = localStorage.getItem('authenticatedUserEmail');
+            if (!authenticatedEmail) {
+                alert('Nenhum usuário autenticado.');
+                window.location.href = 'login.html'; // Redireciona para a tela de login
+                return;
+            }
+
+            // Recupera os projetos do localStorage
+            let projects = JSON.parse(localStorage.getItem('projects')) || [];
+            let projectListDiv = document.getElementById('projectList');
+
+            // Filtra os projetos do gerente autenticado (aqui podemos usar o email para identificar o gerente)
+            let managerProjects = projects.filter(project => project.managerEmail === authenticatedEmail);
+
+            if (managerProjects.length === 0) {
+                projectListDiv.innerHTML = '<p class="no-projects">Nenhum projeto encontrado para este gerente.</p>';
+                return;
+            }
+
+            // Exibe os projetos
+            managerProjects.forEach(project => {
+                let projectDiv = document.createElement('div');
+                projectDiv.className = 'project';
+
+                projectDiv.innerHTML = `
+                    <h3>${project.name}</h3>
+                    <p><strong>Equipe:</strong> ${project.team}</p>
+                    <p><strong>Prazo:</strong> ${project.deadline}</p>
+                    <p><strong>Descrição:</strong> ${project.description}</p>
+                `;
+
+                projectListDiv.appendChild(projectDiv);
+            });
+        }
+
+        // Redirecionar para a tela principal
+        document.getElementById('backToMainBtn').addEventListener('click', function() {
+            window.location.href = 'Tela_principal.html'; // Redireciona para a tela principal
+        });
+
+        // Carregar os projetos ao abrir a página
+        window.onload = function() {
+            listManagerProjects();
+        };
+    </script>
+</body>
+</html>
